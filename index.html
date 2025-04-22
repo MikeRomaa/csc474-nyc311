@@ -1,0 +1,271 @@
+<!DOCTYPE HTML>
+
+<html lang="en">
+    <head>
+        <title>Visualizing NYC 311 Data</title>
+
+        <link href="./index.css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <h1>Visualizing NYC 311 Data</h1>
+        <p>A Project by Michael Romashov</p>
+
+        <hr />
+
+        <p>
+            In total, NYC's 311 hotline—which provides information about municipal services and a way to report
+            violations of civil codes—has received just under 13 million requests in 2024 alone in a report published
+            by the service<sup><a href="#footnote-1">[1]</a></sup>. These requests range from noise complaints, to poor
+            road condition reports, to inadequate heating in municipally subsidized housing.
+        </p>
+
+        <p>
+            Data from 311 requests has the potential to provide insight into the general trends across the city, which
+            in turn may help guide funding and resource allocation from the municipal agencies. It may, for example,
+            indicate a general upwards trend in poor road conditions across the city, suggesting that additional funding
+            is needed for the Department of Transportation to maintain public roadways. Or, it may indicate that the
+            number of fraudulent taxi operators is on the rise and suggest the need for stricter regulation of T&LC
+            licences. This is, of course, pure speculation and only meant to illustrate the way 311 requests can provide
+            a sort of overview onto the city's systems in aggregate.
+        </p>
+
+        <p>
+            As such, the target audience for this analysis are local municipal representatives and borough-level
+            administration. They have the most immediate impact on funding allocation, and this data is intended to
+            guide those decisions.
+        </p>
+
+        <p>
+            Luckily for us, New York City is one of few cities that provides completely free access to several datasets
+            collected by municpal agencies through their <b>NYC OpenData</b><sup><a href="#footnote-2">[2]</a></sup>
+            portal, and 311 request data happens to be one of these datesets. With this dataset, I hope to be able to
+            identify these overall trends and speculate upon what could be done in response to them.
+        </p>
+
+        <blockquote>
+            <b>PS;</b> Before we get into the data I would like to mention that although we were required to use
+            interactive ggplot visualizations, I find them to be incredibly finicky and detrimental to the overall
+            presentation. For that reason, there are radio buttons for most of the visualizations to switch between a
+            static and interactive display.
+        </blockquote>
+
+        <h2>Finding our Bearings</h2>
+        <hr />
+
+        <p>
+            The specific dataset we are looking at is titled
+            <b>311 Service Requests from 2010 to Present</b><sup><a href="#footnote-3">[3]</a></sup> and claims to have
+            a behemoth <em>39.7 million rows</em>. This is far more data than even the website can handle, so we'll
+            limit the time range we are looking at to <b>January 2021–April 2025</b>, which leaves us with a more modest
+            <em>16.4 million rows</em>.
+        </p>
+
+        <p>
+            In direct support of our goal to see general trends of 311 requests throughout the past four years, we can
+            plot the total number of requests made to 311, with each agency getting its own color to show their share of
+            requests.
+        </p>
+
+        <div class="visualization">
+            <input hidden type="radio" id="vis1-static" name="vis1" data-type="static" checked />
+            <label for="vis1-static">Static</label>
+
+            <input hidden type="radio" id="vis1-interactive" name="vis1" data-type="interactive" />
+            <label for="vis1-interactive">Interactive</label>
+
+            <img src="./img/vis1.png" />
+            <iframe src="https://chart-studio.plotly.com/~MikeRoma/1.embed"></iframe>
+        </div>
+
+        <p>
+            From this chart we can immediately tell that the amount of 311 requests made each year has stayed at roughly
+            the same level over the past four years, with seemingly no upward nor downward trend. We can also see that
+            very few agencies make up a large portion of the total request volume, namely the NYPD and HPD (Housing
+            Protection and Development Agency). This is indicative of the fact that the two agencies heavily depend on
+            reports by the public to do their work, but not necessarily that they require more or less resources. We
+            will have to look at our data in different ways to determine that.
+        </p>
+
+        <p>
+            An interesting feature of this chart, however, is the apparent spike in call traffic in January of 2025.
+            This does not apear to be cyclic, as the other years do not exhibit this spike. It does, however, appear to
+            affect the different agencies in disproportionate ways. The only two agencies to have noticable increases in
+            request traffic are the HPD and NYPD, with the latter of the two exhibiting being less drastic.
+        </p>
+
+        <p>
+            This suggests that we should take a look at the HPD's 311 request traffic year-to-year between 2024 and 2025
+            to identify if there is any room for improvement for the agency.
+        </p>
+
+        <h2>Narrowing our Focus</h2>
+        <hr />
+
+        <p>
+            Now that we're looking specifically at the HPD, we can start to identify more interesting trends. The first
+            thing I took a look at was the kinds of request types that they receive through 311 and their rough
+            distributions. For this, I use a simple horizontal bar chart with the count of each type of request over the
+            course of all four years.
+        </p>
+
+        <div class="visualization">
+            <input hidden type="radio" id="vis2-static" name="vis2" data-type="static" checked />
+            <label for="vis2-static">Static</label>
+
+            <input hidden type="radio" id="vis2-interactive" name="vis2" data-type="interactive" />
+            <label for="vis2-interactive">Interactive</label>
+
+            <img src="./img/vis2.png" />
+            <iframe src="https://chart-studio.plotly.com/~MikeRoma/3.embed"></iframe>
+        </div>
+
+        <p>
+            From this chart, it looks like heating and hot water requests account for just over a third of all requests
+            made to the HPD. Without actually looking at the month-by-month comparisons, it would not be surprising if
+            heating requests saw a spike between December 2024 and January 2025, as it was an unusually cold winter by
+            many accounts<sup><a href="#footnote-4">[4]</a></sup>.
+        </p>
+
+        <p>
+            We can try mirroring the same setup as the first visualization for the distribution of agencies across all
+            311 requests, but filtering it to just HPD requests and grouping it by the complaint type instead.
+        </p>
+
+        <div class="visualization">
+            <input hidden type="radio" id="vis3-static" name="vis3" data-type="static" checked />
+            <label for="vis3-static">Static</label>
+
+            <input hidden type="radio" id="vis3-interactive" name="vis3" data-type="interactive" />
+            <label for="vis3-interactive">Interactive</label>
+
+            <img src="./img/vis3.png" />
+            <iframe src="https://chart-studio.plotly.com/~MikeRoma/5.embed"></iframe>
+        </div>
+
+        <p>
+            As we predicted, heating and hot water did indeed acocunt for the dramatic spike in 311 traffic in January
+            of 2025. In fact, we can see a cyclic spike during each winter season, though the previous one was slightly
+            more dramatic than the ones from before.
+        </p>
+
+        <h2>Geographic Analysis</h2>
+        <hr />
+
+        <p>
+            Out of curiosity, we can also take a look at where these requests are coming from geographically, and
+            overlay a heatmap of requests onto a tract map of the city. Each tract is treated as a single unit for
+            administrative and surveying purposes, and they are granular enough that we can see where these requests are
+            coming from.
+        </p>
+
+        <p>
+            I've also overlaid all of NYCHA's housing developments onto the map with black dots to see if there is any
+            increase in heating and hot water requests inside of NYCHA's properties. This data was taken from the
+            <b>NYCHA Residential Addresses</b><sup><a href="#footnote-5">[5]</a></sup> dataset from NYC OpenData.
+        </p>
+
+        <blockquote>
+            <b>Note;</b> This graph was much too large for Plotly to handle, even if I served the file myself and used
+            plotly.js, so I must resort to including a static image only.
+        </blockquote>
+
+        <img src="./img/vis4.png" />
+
+        <p>
+            
+        </p>
+
+        <h2>Conclusions</h2>
+        <hr />
+
+        <p>
+            So, what have we learned? Well, as it turns out—many New Yorkers are using 311 to report a lack of heating
+            or hot water to the Housing Protection and Development Agency. This may indicate that the HPD needs
+            additional resources and regulatory jurisdiction to be more proactive about adequate heating during the
+            colder winter months.
+        </p>
+
+        <p>
+            I looked into how the HPD handles these kinds of requests<sup><a href="#footnote-6">[6]</a></sup>, and they
+            seem to be rather resource intensive. Filing such a complaint will lead the HPD to perform an investigation
+            on the property and subsequently ticket the owner if a violation is found. By being more proactive and
+            ensuring adequate heating, the HPD and adjacent agencies such as NYCHA can reduce the quantity of complaints
+            being made.
+        </p>
+
+        <p>
+            Speaking of NYCHA, it appears that there is no strong correlation between NYCHA development projects and an
+            increase in heating complaints during colder winter months. There does, however, appear to be a higher
+            number of complaints made during the warmer summer months. This may point to a lack of adequate insulation,
+            leading to sudden drops in temperatures during night hours.
+        </p>
+
+        <p>
+            Another interesting thing that came up during this data analysis was that I actually found erroneous data
+            within the NYCHA dataset. Two of the addresses had their coordinates encoded with a positive longitude, for
+            exmaple <b>(40.821775, 73.942347)</b>, which resulted in the visualization showing a mostly empty void. I
+            submitted a report to NYC OpenData to get this resolved.
+        </p>
+
+        <h2>Footnotes</h2>
+        <hr />
+
+        <ol>
+            <li id="footnote-1">
+                <a
+                    rel="noreferrer"
+                    target="_blank"
+                    href="https://www.nyc.gov/assets/operations/downloads/pdf/pmmr2024/311.pdf"
+                >
+                    https://www.nyc.gov/assets/operations/downloads/pdf/pmmr2024/311.pdf
+                </a>
+            </li>
+            <li id="footnote-2">
+                <a
+                    rel="noreferrer"
+                    target="_blank"
+                    href="https://opendata.cityofnewyork.us/"
+                >
+                    https://opendata.cityofnewyork.us
+                </a>
+            </li>
+            <li id="footnote-3">
+                <a
+                    rel="noreferrer"
+                    target="_blank"
+                    href="https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9"
+                >
+                    https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9
+                </a>
+            </li>
+            <li id="footnote-4">
+                <a
+                    rel="noreferrer"
+                    target="_blank"
+                    href="https://www.fox5ny.com/news/weather-nyc-snow-polar-vortex-2025-cold-winter-forecast-ny-nj-ct"
+                >
+                    https://www.fox5ny.com/news/weather-nyc-snow-polar-vortex-2025-cold-winter-forecast-ny-nj-ct
+                </a>
+            </li>
+            <li id="footnote-5">
+                <a
+                    rel="noreferrer"
+                    target="_blank"
+                    href="https://data.cityofnewyork.us/Housing-Development/NYCHA-Residential-Addresses/3ub5-4ph8"
+                >
+                    https://data.cityofnewyork.us/Housing-Development/NYCHA-Residential-Addresses/3ub5-4ph8
+                </a>
+            </li>
+            <li id="footnote-6">
+                <a
+                    rel="noreferrer"
+                    target="_blank"
+                    href="https://portal.311.nyc.gov/article/?kanumber=KA-01036"
+                >
+                    https://portal.311.nyc.gov/article/?kanumber=KA-01036
+                </a>
+            </li>
+        </ol>
+    </body>
+</html>
